@@ -1,0 +1,35 @@
+name: Food Ordering CI/CD
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  build-test-package-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Build
+        run: |
+          echo "Building Online Food Ordering application..."
+          test -f index.html
+      - name: Test
+        run: |
+          echo "Testing application..."
+          grep -q "Online Food Ordering System" index.html
+      - name: Package
+        run: |
+          mkdir package
+          cp index.html package/
+          cp menu.txt package/
+          echo "Application packaged successfully"
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './package'
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
